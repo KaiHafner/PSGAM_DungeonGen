@@ -4,7 +4,6 @@
 #include "GameFramework/Actor.h"
 #include "DungeonGenerator.generated.h"
 
-
 class ATestRoom_Room1;
 class ATestMasterRoom;
 UCLASS()
@@ -21,9 +20,12 @@ public:
 	TSubclassOf<ATestRoom_Room1> StartingRoom;
 
 	UPROPERTY(EditAnywhere, Category = "Rooms")
-	TSubclassOf<ATestMasterRoom> RoomsToBeSpawned;
+	TArray<TSubclassOf<ATestMasterRoom>> RoomsToBeSpawned;
+
+	TArray<USceneComponent*>Exits;
 
 	void SpawnStartingRoom();
+	void SpawnNextRoom();
 
 protected:
 	virtual void BeginPlay() override;

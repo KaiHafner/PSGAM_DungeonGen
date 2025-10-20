@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -8,7 +6,6 @@
 
 class UBoxComponent;
 class UArrowComponent;
-
 UCLASS()
 class PSGAM_DUNGEONGEN_API ATestMasterRoom : public AActor
 {
@@ -19,6 +16,8 @@ public:
 	ATestMasterRoom();
 
 	virtual void Tick(float DeltaTime) override;
+
+	FORCEINLINE USceneComponent* GetExitHolder() const { return ExitHolder; }
 
 protected:
 	virtual void BeginPlay() override;
