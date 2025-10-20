@@ -6,21 +6,67 @@
 #include "GameFramework/Actor.h"
 #include "MasterRoom.generated.h"
 
+class UBoxComponent;
+class UArrowComponent;
+
 UCLASS()
 class PSGAM_DUNGEONGEN_API AMasterRoom : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
 	AMasterRoom();
 
+	virtual void Tick(float DeltaTime) override;
+
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	//Creating Folders
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	USceneComponent* DefaultSceneRoot;
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	USceneComponent* GeometryHolder;
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	USceneComponent* OverlapHolder;
+
+
+	//For Meshes
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UStaticMeshComponent* Cube_1;
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UStaticMeshComponent* Cube_2;
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UStaticMeshComponent* Cube_3;
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UStaticMeshComponent* Cube_4;
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UStaticMeshComponent* Cube_5;
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UStaticMeshComponent* Cube_6;
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UStaticMeshComponent* Cube_7;
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UStaticMeshComponent* Cube_8;
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UStaticMeshComponent* Floor;
+
+
+	//Collision Boxes
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UBoxComponent* BoxCollision;
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UArrowComponent* DirectionArrow;
 
 };
