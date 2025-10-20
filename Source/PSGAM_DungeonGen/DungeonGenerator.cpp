@@ -1,27 +1,29 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "DungeonGenerator.h"
+#include "TestRoom_Room1.h"
 
-// Sets default values
+
 ADungeonGenerator::ADungeonGenerator()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 }
 
-// Called when the game starts or when spawned
 void ADungeonGenerator::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	SpawnStartingRoom();
 }
 
-// Called every frame
 void ADungeonGenerator::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void ADungeonGenerator::SpawnStartingRoom()
+{
+	ATestRoom_Room1* SpawnedStartRoom = this->GetWorld()->SpawnActor<ATestRoom_Room1>(StartingRoom);
+	SpawnedStartRoom->SetActorLocation(this->GetActorLocation());
 }
 
