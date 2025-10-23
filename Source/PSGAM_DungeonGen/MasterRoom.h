@@ -2,18 +2,18 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "TestMasterRoom.generated.h"
+#include "MasterRoom.generated.h"
 
 class UBoxComponent;
 class UArrowComponent;
 UCLASS()
-class PSGAM_DUNGEONGEN_API ATestMasterRoom : public AActor
+class PSGAM_DUNGEONGEN_API AMasterRoom : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	ATestMasterRoom();
+	AMasterRoom();
 
 	virtual void Tick(float DeltaTime) override;
 

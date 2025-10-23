@@ -1,8 +1,8 @@
-#include "TestMasterRoom.h"
+#include "MasterRoom.h"
 #include "Components/ArrowComponent.h"
 #include "Components/BoxComponent.h"
 
-ATestMasterRoom::ATestMasterRoom()
+AMasterRoom::AMasterRoom()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -29,13 +29,13 @@ ATestMasterRoom::ATestMasterRoom()
 	DirectionArrow->bHiddenInGame = false;
 }
 
-void ATestMasterRoom::BeginPlay()
+void AMasterRoom::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
-void ATestMasterRoom::Tick(float DeltaTime)
+void AMasterRoom::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 

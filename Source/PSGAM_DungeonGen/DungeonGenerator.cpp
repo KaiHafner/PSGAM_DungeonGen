@@ -1,6 +1,6 @@
 #include "DungeonGenerator.h"
-#include "Rooms/TestRoom_Room1.h"
-#include "TestMasterRoom.h"
+#include "Rooms/Room1.h"
+#include "MasterRoom.h"
 
 ADungeonGenerator::ADungeonGenerator()
 {
@@ -24,7 +24,7 @@ void ADungeonGenerator::Tick(float DeltaTime)
 
 void ADungeonGenerator::SpawnStartingRoom()
 {
-	ATestRoom_Room1* SpawnedStartRoom = this->GetWorld()->SpawnActor<ATestRoom_Room1>(StartingRoom);
+	ARoom1* SpawnedStartRoom = this->GetWorld()->SpawnActor<ARoom1>(StartingRoom);
 	SpawnedStartRoom->SetActorLocation(this->GetActorLocation());
 
 	SpawnedStartRoom->GetExitHolder()->GetChildrenComponents(false, Exits);
@@ -32,7 +32,7 @@ void ADungeonGenerator::SpawnStartingRoom()
 
 void ADungeonGenerator::SpawnNextRoom()
 {
-	ATestMasterRoom* LatestSpawnedRoom = this->GetWorld()->SpawnActor<ATestMasterRoom>(RoomsToBeSpawned[rand() % RoomsToBeSpawned.Num()]);
+	AMasterRoom* LatestSpawnedRoom = this->GetWorld()->SpawnActor<AMasterRoom>(RoomsToBeSpawned[rand() % RoomsToBeSpawned.Num()]);
 	USceneComponent* SelectedExitPoint = Exits[rand() % Exits.Num()];
 	LatestSpawnedRoom->SetActorLocation(SelectedExitPoint->GetComponentLocation());
 	LatestSpawnedRoom->SetActorRotation(SelectedExitPoint->GetComponentRotation());

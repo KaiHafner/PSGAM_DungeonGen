@@ -3,18 +3,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "../TestMasterRoom.h"
-#include "TestRoom_Room2.generated.h"
+#include "../MasterRoom.h"
+#include "Room2.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PSGAM_DUNGEONGEN_API ATestRoom_Room2 : public ATestMasterRoom
+class PSGAM_DUNGEONGEN_API ARoom2 : public AMasterRoom
 {
 	GENERATED_BODY()
 	
-	ATestRoom_Room2();
+	ARoom2();
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UArrowComponent* Exit_Arrow1;

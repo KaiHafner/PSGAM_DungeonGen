@@ -4,8 +4,8 @@
 #include "GameFramework/Actor.h"
 #include "DungeonGenerator.generated.h"
 
-class ATestRoom_Room1;
-class ATestMasterRoom;
+class ARoom1;
+class AMasterRoom;
 UCLASS()
 class PSGAM_DUNGEONGEN_API ADungeonGenerator : public AActor
 {
@@ -17,11 +17,11 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere, Category = "Rooms")
-	TSubclassOf<ATestRoom_Room1> StartingRoom;
+	TSubclassOf<ARoom1> StartingRoom;
 
 	//Array of all possible rooms that can be stored
 	UPROPERTY(EditAnywhere, Category = "Rooms")
-	TArray<TSubclassOf<ATestMasterRoom>> RoomsToBeSpawned;
+	TArray<TSubclassOf<AMasterRoom>> RoomsToBeSpawned;
 
 	TArray<USceneComponent*>Exits;
 
