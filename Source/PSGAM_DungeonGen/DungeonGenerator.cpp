@@ -33,8 +33,8 @@ void ADungeonGenerator::SpawnStartingRoom()
 void ADungeonGenerator::SpawnNextRoom()
 {
 	ATestMasterRoom* LatestSpawnedRoom = this->GetWorld()->SpawnActor<ATestMasterRoom>(RoomsToBeSpawned[rand() % RoomsToBeSpawned.Num()]);
-	USceneComponent* SelectredExitPoint = Exits[rand() % Exits.Num()];
-	LatestSpawnedRoom->SetActorLocation(SelectredExitPoint->GetComponentLocation());
-	LatestSpawnedRoom->SetActorRotation(SelectredExitPoint->GetComponentRotation());
+	USceneComponent* SelectedExitPoint = Exits[rand() % Exits.Num()];
+	LatestSpawnedRoom->SetActorLocation(SelectedExitPoint->GetComponentLocation());
+	LatestSpawnedRoom->SetActorRotation(SelectedExitPoint->GetComponentRotation());
 }
 

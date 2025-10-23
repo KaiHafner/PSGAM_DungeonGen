@@ -22,7 +22,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	//Creating Folders
+	//Folders
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	USceneComponent* DefaultSceneRoot;
 	UPROPERTY(VisibleAnywhere, Category = "Components")
@@ -32,13 +32,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	USceneComponent* ExitHolder;
 
-
-	//For Meshes
+	//Important base setup for all
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UStaticMeshComponent* Floor;
-
-
-	//Collision Boxes
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UBoxComponent* BoxCollision;
 	UPROPERTY(VisibleAnywhere, Category = "Components")

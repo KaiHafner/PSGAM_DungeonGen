@@ -19,6 +19,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Rooms")
 	TSubclassOf<ATestRoom_Room1> StartingRoom;
 
+	//Array of all possible rooms that can be stored
 	UPROPERTY(EditAnywhere, Category = "Rooms")
 	TArray<TSubclassOf<ATestMasterRoom>> RoomsToBeSpawned;
 
