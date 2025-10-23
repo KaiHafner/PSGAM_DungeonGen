@@ -13,4 +13,8 @@ ATestRoom_Room1::ATestRoom_Room1()
 	Exit_Arrow1->SetupAttachment(ExitHolder);
 	Exit_Arrow2->SetupAttachment(ExitHolder);
 	Exit_Arrow3->SetupAttachment(ExitHolder);
+
+	Exit_Arrow1->bHiddenInGame = false;
+	Exit_Arrow2->bHiddenInGame = false;
+	Exit_Arrow3->bHiddenInGame = false;
 }
