@@ -1,5 +1,5 @@
 #include "DungeonGenerator.h"
-#include "TestRoom_Room1.h"
+#include "Rooms/TestRoom_Room1.h"
 #include "TestMasterRoom.h"
 
 ADungeonGenerator::ADungeonGenerator()
