@@ -23,10 +23,19 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Rooms")
 	TArray<TSubclassOf<AMasterRoom>> RoomsToBeSpawned;
 
+	UPROPERTY(EditAnywhere, Category = "Generation Info")
+	int32 RoomLimit;
+
+	AMasterRoom* LatestSpawnedRoom;
+	
+	bool bCanSpawn;
+
 	TArray<USceneComponent*>Exits;
 
 	void SpawnStartingRoom();
 	void SpawnNextRoom();
+	void RemoveOverlappingRooms();
+	void CloseExits();
 
 protected:
 	virtual void BeginPlay() override;

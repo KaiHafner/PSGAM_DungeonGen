@@ -19,16 +19,19 @@ public:
 
 	FORCEINLINE USceneComponent* GetExitHolder() const { return ExitHolder; }
 
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	USceneComponent* OverlapHolder;
+
 protected:
 	virtual void BeginPlay() override;
 
 	//Folders
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	USceneComponent* DefaultSceneRoot;
+
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	USceneComponent* GeometryHolder;
-	UPROPERTY(VisibleAnywhere, Category = "Components")
-	USceneComponent* OverlapHolder;
+
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	USceneComponent* ExitHolder;
 
