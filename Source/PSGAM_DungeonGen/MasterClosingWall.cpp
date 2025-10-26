@@ -6,6 +6,10 @@ AMasterClosingWall::AMasterClosingWall()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	ClosingWall = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ClosingWall"));
+
+	ClosingWall->SetupAttachment(RootComponent);
+
 }
 
 void AMasterClosingWall::BeginPlay()

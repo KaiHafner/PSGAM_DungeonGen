@@ -6,6 +6,7 @@
 
 class ARoom1;
 class AMasterRoom;
+class AMasterClosingWall;
 UCLASS()
 class PSGAM_DUNGEONGEN_API ADungeonGenerator : public AActor
 {
@@ -23,19 +24,29 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Rooms")
 	TArray<TSubclassOf<AMasterRoom>> RoomsToBeSpawned;
 
+	UPROPERTY(EditAnywhere, Category = "Unused Exits Closing Wall")
+	TSubclassOf<AMasterClosingWall> ClosingWall;
+
 	UPROPERTY(EditAnywhere, Category = "Generation Info")
 	int32 RoomLimit;
 
+	//Seed stuff
+	FRandomStream RandomStream;
+	UPROPERTY(EditAnywhere, Category = "Generation Info")
+	int32 GenerationSeed; //If -1 in engine random seed
+
+	//Roomn spawning Info
 	AMasterRoom* LatestSpawnedRoom;
-	
 	bool bCanSpawn;
 
 	TArray<USceneComponent*>Exits;
+
 
 	void SpawnStartingRoom();
 	void SpawnNextRoom();
 	void RemoveOverlappingRooms();
 	void CloseExits();
+	void SetSeed();
 
 protected:
 	virtual void BeginPlay() override;
