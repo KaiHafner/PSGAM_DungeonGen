@@ -40,6 +40,8 @@ void ADungeonGenerator::SpawnNextRoom()
 {
 	bCanSpawn = true;
 
+	//if(Roo)
+
 	int32 RoomIndex = RandomStream.RandRange(0, RoomsToBeSpawned.Num() - 1);
 	LatestSpawnedRoom = this->GetWorld()->SpawnActor<AMasterRoom>(RoomsToBeSpawned[RoomIndex]);
 
