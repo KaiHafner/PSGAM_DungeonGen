@@ -25,7 +25,7 @@ public:
 	TArray<TSubclassOf<AMasterRoom>> RoomsToBeSpawned;
 
 	UPROPERTY(EditAnywhere, Category = "Rooms")
-	TArray<TSubclassOf<AMasterRoom>> LimitedSpawnRooms;
+	TArray<TSubclassOf<AMasterRoom>> SpecialSpawnRooms;
 
 	UPROPERTY(EditAnywhere, Category = "Unused Exits Closing Wall")
 	TSubclassOf<AMasterClosingWall> ClosingWall;

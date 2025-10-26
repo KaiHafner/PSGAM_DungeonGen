@@ -40,10 +40,17 @@ void ADungeonGenerator::SpawnNextRoom()
 {
 	bCanSpawn = true;
 
-	//if(Roo)
-
-	int32 RoomIndex = RandomStream.RandRange(0, RoomsToBeSpawned.Num() - 1);
-	LatestSpawnedRoom = this->GetWorld()->SpawnActor<AMasterRoom>(RoomsToBeSpawned[RoomIndex]);
+	//RoomLimit % 10 == 0 means 1/10 rooms is special 
+	if (RoomLimit % 10 == 0) 
+	{
+		int32 SpecialRoomIndex = RandomStream.RandRange(0, SpecialSpawnRooms.Num() - 1);
+		LatestSpawnedRoom = this->GetWorld()->SpawnActor<AMasterRoom>(SpecialSpawnRooms[SpecialRoomIndex]);
+	}
+	else 
+	{
+		int32 RoomIndex = RandomStream.RandRange(0, RoomsToBeSpawned.Num() - 1);
+		LatestSpawnedRoom = this->GetWorld()->SpawnActor<AMasterRoom>(RoomsToBeSpawned[RoomIndex]);
+	}
 
 	int32 ExitIndex = RandomStream.RandRange(0, Exits.Num() - 1);
 	USceneComponent* SelectedExitPoint = Exits[ExitIndex];
