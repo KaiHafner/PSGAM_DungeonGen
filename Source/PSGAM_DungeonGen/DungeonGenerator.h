@@ -33,6 +33,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Generation Info")
 	int32 RoomLimit;
 
+	UPROPERTY(EditAnywhere, Category = "Generation Info")
+	bool LinearDungeon;
+
 	//Seed stuff
 	FRandomStream RandomStream;
 	UPROPERTY(EditAnywhere, Category = "Generation Info")
@@ -44,12 +47,17 @@ public:
 
 	TArray<USceneComponent*>Exits;
 
+	TArray<USceneComponent*> ClosingUnusedExits;
+	TArray<USceneComponent*> LatestClosingExits;
+
+
 
 	void SpawnStartingRoom();
 	void SpawnNextRoom();
 	void RemoveOverlappingRooms();
 	void CloseExits();
 	void SetSeed();
+	void RestartGen();
 
 protected:
 	virtual void BeginPlay() override;
