@@ -3,6 +3,7 @@
 #include "MasterRoom.h"
 #include "Components/BoxComponent.h"
 #include "MasterClosingWall.h"
+#include "Kismet/GameplayStatics.h"
 
 ADungeonGenerator::ADungeonGenerator()
 {
@@ -33,12 +34,23 @@ void ADungeonGenerator::SpawnStartingRoom()
 	ARoom1* SpawnedStartRoom = this->GetWorld()->SpawnActor<ARoom1>(StartingRoom);
 	SpawnedStartRoom->SetActorLocation(this->GetActorLocation());
 
+	SpawnedStartRoom->GetExitHolder()->GetChildrenComponents(false, ClosingUnusedExits);
+
 	SpawnedStartRoom->GetExitHolder()->GetChildrenComponents(false, Exits);
 }
 
 void ADungeonGenerator::SpawnNextRoom()
 {
 	bCanSpawn = true;
+
+	if (RoomLimit <= 0)
+	{
+		return;
+	}
+	if (Exits.Num() == 0)
+	{
+		return;
+	}
 
 	//RoomLimit % 10 == 0 means 1/10 rooms is special 
 	if (RoomLimit % 10 == 0) 
@@ -55,6 +67,11 @@ void ADungeonGenerator::SpawnNextRoom()
 	int32 ExitIndex = RandomStream.RandRange(0, Exits.Num() - 1);
 	USceneComponent* SelectedExitPoint = Exits[ExitIndex];
 
+	if (LinearDungeon)
+	{
+		Exits.Empty();
+	}
+
 	LatestSpawnedRoom->SetActorLocation(SelectedExitPoint->GetComponentLocation());
 	LatestSpawnedRoom->SetActorRotation(SelectedExitPoint->GetComponentRotation());
 
@@ -62,6 +79,10 @@ void ADungeonGenerator::SpawnNextRoom()
 	
 	if (bCanSpawn)
 	{
+		LatestSpawnedRoom->GetExitHolder()->GetChildrenComponents(false, LatestClosingExits);
+		ClosingUnusedExits.Append(LatestClosingExits);
+		ClosingUnusedExits.Remove(SelectedExitPoint);
+
 		Exits.Remove(SelectedExitPoint);
 		TArray<USceneComponent*> LatestExitPoints;
 		LatestSpawnedRoom->GetExitHolder()->GetChildrenComponents(false, LatestExitPoints);
@@ -92,12 +113,17 @@ void ADungeonGenerator::RemoveOverlappingRooms()
 		bCanSpawn = false;
 		RoomLimit = RoomLimit + 1;
 		LatestSpawnedRoom->Destroy();
+
+		if (LinearDungeon)
+		{
+			RestartGen();
+		}
 	}
 }
 
 void ADungeonGenerator::CloseExits()
 {
-	for (USceneComponent* Element : Exits) 
+	for (USceneComponent* Element : ClosingUnusedExits)
 	{
 		AMasterClosingWall* ClosingWallSpawned = GetWorld()->SpawnActor<AMasterClosingWall>(ClosingWall);
 
@@ -126,3 +152,8 @@ void ADungeonGenerator::SetSeed()
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("%d"), GenerationSeedResult));
 }
 
+void ADungeonGenerator::RestartGen()
+{
+	FName CurrentLevel = GetWorld()->GetFName();
+	UGameplayStatics::OpenLevel(GetWorld(), CurrentLevel);
+}
