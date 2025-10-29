@@ -80,7 +80,7 @@ void ADungeonGenerator::SpawnNextRoom()
 		}
 	}
 
-	if (RandomStream.FRand() < 0.4f) //20% random exits
+	if (RandomStream.FRand() < 0.4f) //40% random exits
 	{
 		SelectedExitPoint = Exits[RandomStream.RandRange(0, Exits.Num() - 1)];
 	}
