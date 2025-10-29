@@ -95,6 +95,11 @@ void ADungeonGenerator::SpawnNextRoom()
 	{
 		SpawnNextRoom();
 	}
+	else
+	{
+		bDungeonCompleted = true;
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Dungeon Completed: %d"), GenerationSeedResult));
+	}
 }
 
 void ADungeonGenerator::RemoveOverlappingRooms()
@@ -139,7 +144,6 @@ void ADungeonGenerator::CloseExits()
 
 void ADungeonGenerator::SetSeed()
 {
-	int32 GenerationSeedResult;
 	if (GenerationSeed == -1) 
 	{
 		GenerationSeedResult = FMath::Rand();
@@ -148,6 +152,7 @@ void ADungeonGenerator::SetSeed()
 	{
 		GenerationSeedResult = GenerationSeed;
 	}
+
 	RandomStream.Initialize(GenerationSeedResult);
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("%d"), GenerationSeedResult));
 }
