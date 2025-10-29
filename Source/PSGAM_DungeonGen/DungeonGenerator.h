@@ -41,8 +41,13 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Generation Info")
 	int32 GenerationSeed; //If -1 in engine random seed
 
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Dungeon Info")
+	int32 GenerationSeedResult;
+
 	//Roomn spawning Info
 	AMasterRoom* LatestSpawnedRoom;
+	bool bDungeonCompleted;
 	bool bCanSpawn;
 
 	TArray<USceneComponent*>Exits;

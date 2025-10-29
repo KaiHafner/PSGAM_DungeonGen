@@ -119,9 +119,10 @@ void ADungeonGenerator::SpawnNextRoom()
 	{
 		SpawnNextRoom();
 	}
-	else 
+	else
 	{
-		
+		bDungeonCompleted = true;
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Dungeon Completed: %d"), GenerationSeedResult));
 	}
 }
 
@@ -167,7 +168,6 @@ void ADungeonGenerator::CloseExits()
 
 void ADungeonGenerator::SetSeed()
 {
-	int32 GenerationSeedResult;
 	if (GenerationSeed == -1) 
 	{
 		GenerationSeedResult = FMath::Rand();
