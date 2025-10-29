@@ -119,6 +119,10 @@ void ADungeonGenerator::SpawnNextRoom()
 	{
 		SpawnNextRoom();
 	}
+	else 
+	{
+		
+	}
 }
 
 void ADungeonGenerator::RemoveOverlappingRooms()
