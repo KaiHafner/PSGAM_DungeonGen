@@ -59,6 +59,11 @@ public:
 	void SetSeed();
 	void RestartGen();
 
+
+	// Inside ADungeonGenerator.h
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Generation")
+	FVector PreferredDirection = FVector(1.f, 0.f, 0.f); // Along +X axis
+
 protected:
 	virtual void BeginPlay() override;
 

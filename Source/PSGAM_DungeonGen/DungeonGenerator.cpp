@@ -64,8 +64,32 @@ void ADungeonGenerator::SpawnNextRoom()
 		LatestSpawnedRoom = this->GetWorld()->SpawnActor<AMasterRoom>(RoomsToBeSpawned[RoomIndex]);
 	}
 
-	int32 ExitIndex = RandomStream.RandRange(0, Exits.Num() - 1);
-	USceneComponent* SelectedExitPoint = Exits[ExitIndex];
+	// Find the exit whose forward vector is closest to PreferredDirection
+	float BestDot = -1.f;
+	USceneComponent* SelectedExitPoint = nullptr;
+
+	for (USceneComponent* Exit : Exits)
+	{
+		FVector ExitForward = Exit->GetForwardVector().GetSafeNormal();
+		float Dot = FVector::DotProduct(ExitForward, PreferredDirection.GetSafeNormal());
+
+		if (Dot > BestDot)
+		{
+			BestDot = Dot;
+			SelectedExitPoint = Exit;
+		}
+	}
+
+	if (RandomStream.FRand() < 0.4f) //20% random exits
+	{
+		SelectedExitPoint = Exits[RandomStream.RandRange(0, Exits.Num() - 1)];
+	}
+
+	//Fallback if none found
+	if (!SelectedExitPoint && Exits.Num() > 0)
+	{
+		SelectedExitPoint = Exits[0];
+	}
 
 	if (LinearDungeon)
 	{
