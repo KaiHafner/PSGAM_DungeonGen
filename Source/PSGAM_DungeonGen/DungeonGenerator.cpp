@@ -20,7 +20,7 @@ void ADungeonGenerator::BeginPlay()
 	SpawnStartingRoom();
 	SpawnNextRoom();
 
-	GetWorld()->GetTimerManager().SetTimer(CloseWallHandler, this, &ADungeonGenerator::CloseExits, 1.0f, false);
+	//GetWorld()->GetTimerManager().SetTimer(CloseWallHandler, this, &ADungeonGenerator::CloseExits, 1.0f, false);
 }
 
 void ADungeonGenerator::Tick(float DeltaTime)
@@ -91,15 +91,17 @@ void ADungeonGenerator::SpawnNextRoom()
 
 	RoomLimit = RoomLimit - 1;
 
-	if (RoomLimit > 0) 
+	if (RoomLimit > 0 && bCanSpawn)
 	{
 		SpawnNextRoom();
 	}
-	else
+	else if (RoomLimit <= 0 && bCanSpawn)
 	{
 		bDungeonCompleted = true;
+		CloseExits();
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Dungeon Completed: %d"), GenerationSeedResult));
 	}
+
 }
 
 void ADungeonGenerator::RemoveOverlappingRooms()
@@ -108,7 +110,7 @@ void ADungeonGenerator::RemoveOverlappingRooms()
 	LatestSpawnedRoom->OverlapHolder->GetChildrenComponents(false, OverlappedRooms);
 
 	TArray<UPrimitiveComponent*> OverlappingRooms;
-	for(USceneComponent* Element : OverlappedRooms)
+	for (USceneComponent* Element : OverlappedRooms)
 	{
 		Cast<UBoxComponent>(Element)->GetOverlappingComponents(OverlappingRooms);
 	}
@@ -117,14 +119,17 @@ void ADungeonGenerator::RemoveOverlappingRooms()
 	{
 		bCanSpawn = false;
 		RoomLimit = RoomLimit + 1;
-		LatestSpawnedRoom->Destroy();
 
-		if (LinearDungeon)
+		if (IsValid(LatestSpawnedRoom))
 		{
-			RestartGen();
+			LatestSpawnedRoom->Destroy();
 		}
+
+		RestartGen();
+		return;
 	}
 }
+
 
 void ADungeonGenerator::CloseExits()
 {
