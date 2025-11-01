@@ -13,20 +13,5 @@ UCLASS()
 class PSGAM_DUNGEONGEN_API AStairRoom1 : public AMasterRoom
 {
 	GENERATED_BODY()
-	//AStairRoom1();
-
-	//UPROPERTY(VisibleAnywhere, Category = "Components")
-	//UArrowComponent* Exit_Arrow1;
-	//UPROPERTY(VisibleAnywhere, Category = "Components")
-	//UArrowComponent* Exit_Arrow2;
-	//UPROPERTY(VisibleAnywhere, Category = "Components")
-	//UArrowComponent* Exit_Arrow3;
-	//UPROPERTY(VisibleAnywhere, Category = "Components")
-	//UArrowComponent* Exit_Arrow4;
-
-	//UPROPERTY(VisibleAnywhere, Category = "Components")
-	//UStaticMeshComponent* Floor2;
-
-
 	
 };

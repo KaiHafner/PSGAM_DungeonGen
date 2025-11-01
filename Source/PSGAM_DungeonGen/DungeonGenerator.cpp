@@ -20,7 +20,7 @@ void ADungeonGenerator::BeginPlay()
 	SpawnStartingRoom();
 	SpawnNextRoom();
 
-	GetWorld()->GetTimerManager().SetTimer(CloseWallHandler, this, &ADungeonGenerator::CloseExits, 1.0f, false);
+	//GetWorld()->GetTimerManager().SetTimer(CloseWallHandler, this, &ADungeonGenerator::CloseExits, 1.0f, false);
 }
 
 void ADungeonGenerator::Tick(float DeltaTime)
@@ -122,6 +122,7 @@ void ADungeonGenerator::SpawnNextRoom()
 	else
 	{
 		bDungeonCompleted = true;
+		CloseExits();
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Dungeon Completed: %d"), GenerationSeedResult));
 	}
 }
