@@ -16,92 +16,148 @@ void ADungeonGenerator::BeginPlay()
 
 	FTimerHandle CloseWallHandler;
 
-	SetSeed();
+    SetSeed(); //Initialise the random seed
 	SpawnStartingRoom();
-	SpawnNextRoom();
-
-	//GetWorld()->GetTimerManager().SetTimer(CloseWallHandler, this, &ADungeonGenerator::CloseExits, 1.0f, false);
+	SpawnNextRoom(); //Recursive generation process (talk about this kai)
 }
 
 void ADungeonGenerator::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void ADungeonGenerator::SpawnStartingRoom()
 {
+    //Spawn starting room at the generator position
 	ARoom1* SpawnedStartRoom = this->GetWorld()->SpawnActor<ARoom1>(StartingRoom);
 	SpawnedStartRoom->SetActorLocation(this->GetActorLocation());
 
+    //Get all the needed exits and closing points
 	SpawnedStartRoom->GetExitHolder()->GetChildrenComponents(false, ClosingUnusedExits);
-
 	SpawnedStartRoom->GetExitHolder()->GetChildrenComponents(false, Exits);
 }
 
 void ADungeonGenerator::SpawnNextRoom()
 {
-	bCanSpawn = true;
+    //IMPORTANT - stop condition (no rooms left to spawn or no exits available)
+    if (RoomLimit <= 0 || Exits.Num() == 0)
+    {
+        bDungeonCompleted = true;
+        CloseExits();
+        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green,
+            FString::Printf(TEXT("Dungeon Completed: %d"), GenerationSeedResult));
+        return;
+    }
 
-	if (RoomLimit <= 0)
-	{
-		return;
-	}
-	if (Exits.Num() == 0)
-	{
-		return;
-	}
+    bool bRoomPlaced = false;
+    int32 RetryCount = 0;
+    const int32 MaxRetries = 10;
 
-	//RoomLimit % 10 == 0 means 1/10 rooms is special 
-	if (RoomLimit % 10 == 0) 
-	{
-		int32 SpecialRoomIndex = RandomStream.RandRange(0, SpecialSpawnRooms.Num() - 1);
-		LatestSpawnedRoom = this->GetWorld()->SpawnActor<AMasterRoom>(SpecialSpawnRooms[SpecialRoomIndex]);
-	}
-	else 
-	{
-		int32 RoomIndex = RandomStream.RandRange(0, RoomsToBeSpawned.Num() - 1);
-		LatestSpawnedRoom = this->GetWorld()->SpawnActor<AMasterRoom>(RoomsToBeSpawned[RoomIndex]);
-	}
+    TotalAttempts++; //Attempt Tracker
 
-	int32 ExitIndex = RandomStream.RandRange(0, Exits.Num() - 1);
-	USceneComponent* SelectedExitPoint = Exits[ExitIndex];
 
-	if (LinearDungeon)
-	{
-		Exits.Empty();
-	}
+    while (!bRoomPlaced && RetryCount < MaxRetries)
+    {
+        RetryCount++;
 
-	LatestSpawnedRoom->SetActorLocation(SelectedExitPoint->GetComponentLocation());
-	LatestSpawnedRoom->SetActorRotation(SelectedExitPoint->GetComponentRotation());
+        //Pick room type
+        AMasterRoom* RoomToSpawn = nullptr;
+        if (RoomLimit % 10 == 0 && SpecialSpawnRooms.Num() > 0)
+        {
+            //Spawns special room
+            int32 SpecialRoomIndex = RandomStream.RandRange(0, SpecialSpawnRooms.Num() - 1);
+            RoomToSpawn = GetWorld()->SpawnActor<AMasterRoom>(SpecialSpawnRooms[SpecialRoomIndex]);
+        }
+        else if (RoomsToBeSpawned.Num() > 0)
+        {
+            //spawns normal rooms
+            int32 RoomIndex = RandomStream.RandRange(0, RoomsToBeSpawned.Num() - 1);
+            RoomToSpawn = GetWorld()->SpawnActor<AMasterRoom>(RoomsToBeSpawned[RoomIndex]);
+        }
 
-	RemoveOverlappingRooms();
-	
-	if (bCanSpawn)
-	{
-		LatestSpawnedRoom->GetExitHolder()->GetChildrenComponents(false, LatestClosingExits);
-		ClosingUnusedExits.Append(LatestClosingExits);
-		ClosingUnusedExits.Remove(SelectedExitPoint);
+        if (!RoomToSpawn)
+            continue;
 
-		Exits.Remove(SelectedExitPoint);
-		TArray<USceneComponent*> LatestExitPoints;
-		LatestSpawnedRoom->GetExitHolder()->GetChildrenComponents(false, LatestExitPoints);
-		Exits.Append(LatestExitPoints);
-	}
+        //Pick exit to attach to
+        int32 ExitIndex = RandomStream.RandRange(0, Exits.Num() - 1);
+        USceneComponent* SelectedExit = Exits[ExitIndex];
 
-	RoomLimit = RoomLimit - 1;
+        //Position and rotate the new room to the exit
+        RoomToSpawn->SetActorLocation(SelectedExit->GetComponentLocation());
+        RoomToSpawn->SetActorRotation(SelectedExit->GetComponentRotation());
 
-	if (RoomLimit > 0 && bCanSpawn)
-	{
-		SpawnNextRoom();
-	}
-	else if (RoomLimit <= 0 && bCanSpawn)
-	{
-		bDungeonCompleted = true;
-		CloseExits();
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Dungeon Completed: %d"), GenerationSeedResult));
-	}
+        //Check if it actually doees overlap with existing geometry
+        if (IsRoomOverlap(RoomToSpawn))
+        {
+            RoomToSpawn->Destroy();
+            continue;
+        }
 
+        //Placement success
+        LatestSpawnedRoom = RoomToSpawn;
+        bRoomPlaced = true;
+
+        //Update exit lists
+        TArray<USceneComponent*> LatestExitPoints;
+        LatestSpawnedRoom->GetExitHolder()->GetChildrenComponents(false, LatestExitPoints);
+
+        //Control Linear VS Non Linear
+        if (LinearDungeon)
+        {
+            Exits.Empty();
+        }
+        else
+        {
+            Exits.Remove(SelectedExit);
+        }
+
+        Exits.Append(LatestExitPoints);
+
+        //Update closing walls list
+        LatestSpawnedRoom->GetExitHolder()->GetChildrenComponents(false, LatestClosingExits);
+        ClosingUnusedExits.Append(LatestClosingExits);
+        ClosingUnusedExits.Remove(SelectedExit);
+
+        RoomLimit--;
+    }
+
+    //If still failed after all retries, restart the level
+    if (!bRoomPlaced)
+    {
+        GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Red, FString::Printf(TEXT("Failed to place room after %d retries. Restarting with new seed..."), MaxRetries));
+
+        RestartGen(); //Uses your existing restart function
+        return;
+    }
+
+    //Continue generation
+    if (RoomLimit > 0)
+    {
+        SpawnNextRoom();
+    }
+    else
+    {
+        bDungeonCompleted = true;
+        CloseExits();
+        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Dungeon Completed: %d (Attempts: %d)"), GenerationSeedResult, TotalAttempts));
+    }
+}
+
+bool ADungeonGenerator::IsRoomOverlap(AMasterRoom* RoomToCheck)
+{
+    TArray<USceneComponent*> OverlapCheckComponents;
+    RoomToCheck->OverlapHolder->GetChildrenComponents(false, OverlapCheckComponents);
+
+    for (USceneComponent* Component : OverlapCheckComponents)
+    {
+        TArray<UPrimitiveComponent*> OverlappingComps;
+        Cast<UBoxComponent>(Component)->GetOverlappingComponents(OverlappingComps);
+        if (OverlappingComps.Num() > 0)
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 void ADungeonGenerator::RemoveOverlappingRooms()
@@ -125,16 +181,16 @@ void ADungeonGenerator::RemoveOverlappingRooms()
 			LatestSpawnedRoom->Destroy();
 		}
 
-		RestartGen();
-		return;
+        RestartGen();
+        return;
 	}
 }
-
 
 void ADungeonGenerator::CloseExits()
 {
 	for (USceneComponent* Element : ClosingUnusedExits)
 	{
+        //Spawn actor at unused wall
 		AMasterClosingWall* ClosingWallSpawned = GetWorld()->SpawnActor<AMasterClosingWall>(ClosingWall);
 
 		//RelativeOffset sets position for wall curently flush with other walls
@@ -143,7 +199,6 @@ void ADungeonGenerator::CloseExits()
 
 		ClosingWallSpawned->SetActorLocation(Element->GetComponentLocation() + WorldOffset);
 		ClosingWallSpawned->SetActorRotation(Element->GetComponentRotation());
-
 	}
 }
 

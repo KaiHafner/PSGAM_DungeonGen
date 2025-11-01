@@ -56,12 +56,17 @@ public:
 
 
 
+	bool IsRoomOverlap(AMasterRoom* RoomToCheck);
+	int32 TotalAttempts = 0;
+
+
 	void SpawnStartingRoom();
 	void SpawnNextRoom();
 	void RemoveOverlappingRooms();
 	void CloseExits();
 	void SetSeed();
 	void RestartGen();
+
 
 protected:
 	virtual void BeginPlay() override;
