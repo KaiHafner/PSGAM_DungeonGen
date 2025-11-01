@@ -58,7 +58,10 @@ public:
 
 	bool IsRoomOverlap(AMasterRoom* RoomToCheck);
 	int32 TotalAttempts = 0;
-
+	void SoftRestartGen();
+	int32 StartingRoomLimit;
+	UPROPERTY()
+	TArray<AActor*> SpawnedActors;
 
 	void SpawnStartingRoom();
 	void SpawnNextRoom();
@@ -66,6 +69,8 @@ public:
 	void CloseExits();
 	void SetSeed();
 	void RestartGen();
+
+
 
 
 protected:

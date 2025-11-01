@@ -14,7 +14,7 @@ void ADungeonGenerator::BeginPlay()
 {
 	Super::BeginPlay();
 
-	FTimerHandle CloseWallHandler;
+    StartingRoomLimit = RoomLimit;
 
     SetSeed(); //Initialise the random seed
 	SpawnStartingRoom();
@@ -31,6 +31,10 @@ void ADungeonGenerator::SpawnStartingRoom()
     //Spawn starting room at the generator position
 	ARoom1* SpawnedStartRoom = this->GetWorld()->SpawnActor<ARoom1>(StartingRoom);
 	SpawnedStartRoom->SetActorLocation(this->GetActorLocation());
+
+
+    SpawnedActors.Add(SpawnedStartRoom);
+
 
     //Get all the needed exits and closing points
 	SpawnedStartRoom->GetExitHolder()->GetChildrenComponents(false, ClosingUnusedExits);
@@ -97,6 +101,12 @@ void ADungeonGenerator::SpawnNextRoom()
         LatestSpawnedRoom = RoomToSpawn;
         bRoomPlaced = true;
 
+
+
+        SpawnedActors.Add(RoomToSpawn);
+
+
+
         //Update exit lists
         TArray<USceneComponent*> LatestExitPoints;
         LatestSpawnedRoom->GetExitHolder()->GetChildrenComponents(false, LatestExitPoints);
@@ -126,7 +136,8 @@ void ADungeonGenerator::SpawnNextRoom()
     {
         GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Red, FString::Printf(TEXT("Failed to place room after %d retries. Restarting with new seed..."), MaxRetries));
 
-        RestartGen(); //Uses your existing restart function
+        SoftRestartGen();
+        //RestartGen();
         return;
     }
 
@@ -181,7 +192,8 @@ void ADungeonGenerator::RemoveOverlappingRooms()
 			LatestSpawnedRoom->Destroy();
 		}
 
-        RestartGen();
+        
+        //RestartGen();
         return;
 	}
 }
@@ -192,6 +204,11 @@ void ADungeonGenerator::CloseExits()
 	{
         //Spawn actor at unused wall
 		AMasterClosingWall* ClosingWallSpawned = GetWorld()->SpawnActor<AMasterClosingWall>(ClosingWall);
+
+
+        SpawnedActors.Add(ClosingWallSpawned);
+
+
 
 		//RelativeOffset sets position for wall curently flush with other walls
 		FVector RelativeOffset(-50.0f, 0.0f, 250.0f);
@@ -221,4 +238,27 @@ void ADungeonGenerator::RestartGen()
 {
 	FName CurrentLevel = GetWorld()->GetFName();
 	UGameplayStatics::OpenLevel(GetWorld(), CurrentLevel);
+}
+
+void ADungeonGenerator::SoftRestartGen()
+{
+    for (AActor* Spawned : SpawnedActors)
+    {
+        if (IsValid(Spawned))
+        {
+            Spawned->Destroy();
+        }
+    }
+
+    SpawnedActors.Empty();
+    Exits.Empty();
+    ClosingUnusedExits.Empty();
+    LatestClosingExits.Empty();
+    LatestSpawnedRoom = nullptr;
+    TotalAttempts = 0;
+
+    RoomLimit = StartingRoomLimit;
+    SetSeed();
+    SpawnStartingRoom();
+    SpawnNextRoom();
 }
