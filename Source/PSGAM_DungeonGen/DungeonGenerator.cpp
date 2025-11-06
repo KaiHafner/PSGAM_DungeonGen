@@ -48,8 +48,8 @@ void ADungeonGenerator::SpawnNextRoom()
     {
         bDungeonCompleted = true;
         CloseExits();
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green,
-            FString::Printf(TEXT("Dungeon Completed: %d"), GenerationSeedResult));
+
+        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Dungeon Completed: %d"), GenerationSeedResult));
         return;
     }
 

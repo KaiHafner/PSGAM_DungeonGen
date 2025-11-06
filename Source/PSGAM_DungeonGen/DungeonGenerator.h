@@ -47,6 +47,8 @@ public:
 	//Roomn spawning Info
 	AMasterRoom* LatestSpawnedRoom;
 	bool bCanSpawn;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dungeon Info")
 	bool bDungeonCompleted;
 
 	TArray<USceneComponent*>Exits;
