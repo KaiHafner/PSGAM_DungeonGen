@@ -66,7 +66,7 @@ void ADungeonGenerator::SpawnNextRoom()
 
         //Pick room type
         AMasterRoom* RoomToSpawn = nullptr;
-        if (RoomLimit % 10 == 0 && SpecialSpawnRooms.Num() > 0)
+        if (RoomLimit % 2 == 0 && SpecialSpawnRooms.Num() > 0)
         {
             //Spawns special room
             int32 SpecialRoomIndex = RandomStream.RandRange(0, SpecialSpawnRooms.Num() - 1);
