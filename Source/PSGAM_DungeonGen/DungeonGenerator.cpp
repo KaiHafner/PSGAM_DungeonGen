@@ -32,9 +32,7 @@ void ADungeonGenerator::SpawnStartingRoom()
 	ARoom1* SpawnedStartRoom = this->GetWorld()->SpawnActor<ARoom1>(StartingRoom);
 	SpawnedStartRoom->SetActorLocation(this->GetActorLocation());
 
-
     SpawnedActors.Add(SpawnedStartRoom);
-
 
     //Get all the needed exits and closing points
 	SpawnedStartRoom->GetExitHolder()->GetChildrenComponents(false, ClosingUnusedExits);
@@ -101,11 +99,7 @@ void ADungeonGenerator::SpawnNextRoom()
         LatestSpawnedRoom = RoomToSpawn;
         bRoomPlaced = true;
 
-
-
         SpawnedActors.Add(RoomToSpawn);
-
-
 
         //Update exit lists
         TArray<USceneComponent*> LatestExitPoints;
@@ -137,7 +131,6 @@ void ADungeonGenerator::SpawnNextRoom()
         GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Red, FString::Printf(TEXT("Failed to place room after %d retries. Restarting with new seed..."), MaxRetries));
 
         SoftRestartGen();
-        //RestartGen();
         return;
     }
 
@@ -192,8 +185,6 @@ void ADungeonGenerator::RemoveOverlappingRooms()
 			LatestSpawnedRoom->Destroy();
 		}
 
-        
-        //RestartGen();
         return;
 	}
 }
@@ -232,12 +223,6 @@ void ADungeonGenerator::SetSeed()
 
 	RandomStream.Initialize(GenerationSeedResult);
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("%d"), GenerationSeedResult));
-}
-
-void ADungeonGenerator::RestartGen()
-{
-	FName CurrentLevel = GetWorld()->GetFName();
-	UGameplayStatics::OpenLevel(GetWorld(), CurrentLevel);
 }
 
 void ADungeonGenerator::SoftRestartGen()
