@@ -264,7 +264,7 @@ void ADungeonGenerator::SpawnBossRoom()
         ClosingUnusedExits.Remove(TryExit);
         Exits.Append(BossExits);
 
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green,TEXT("Boss Room placed successfully!"));
+        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green,TEXT("Boss Room placed"));
 
         break;
     }
@@ -272,7 +272,8 @@ void ADungeonGenerator::SpawnBossRoom()
     //If no exit worked
     if (!bPlaced)
     {
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Failed to place Boss Room at any exit!"));
+        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Failed to place Boss Room"));
+        SoftRestartGen();
     }
 }
 
