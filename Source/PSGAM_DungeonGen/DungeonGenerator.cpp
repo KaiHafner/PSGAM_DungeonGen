@@ -44,9 +44,10 @@ void ADungeonGenerator::SpawnNextRoom()
     //IMPORTANT - stop condition (no rooms left to spawn or no exits available)
     if (RoomLimit <= 0 || Exits.Num() == 0)
     {
+        SpawnBossRoom();
+
         bDungeonCompleted = true;
         CloseExits();
-
         GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Dungeon Completed: %d"), GenerationSeedResult));
         return;
     }
@@ -133,7 +134,6 @@ void ADungeonGenerator::SpawnNextRoom()
         SoftRestartGen();
         return;
     }
-
     //Continue generation
     if (RoomLimit > 0)
     {
@@ -141,6 +141,8 @@ void ADungeonGenerator::SpawnNextRoom()
     }
     else
     {
+        SpawnBossRoom();
+
         bDungeonCompleted = true;
         CloseExits();
         GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Dungeon Completed: %d (Attempts: %d)"), GenerationSeedResult, TotalAttempts));
@@ -223,6 +225,56 @@ void ADungeonGenerator::SetSeed()
 
 	RandomStream.Initialize(GenerationSeedResult);
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("%d"), GenerationSeedResult));
+}
+
+void ADungeonGenerator::SpawnBossRoom()
+{
+    if (Exits.Num() == 0)
+        return;
+
+    const int32 MaxRetries = Exits.Num();
+    bool bPlaced = false;
+
+    for (int32 i = Exits.Num() - 1; i >= 0; i--)
+    {
+        USceneComponent* TryExit = Exits[i];
+
+        AMasterRoom* Boss = GetWorld()->SpawnActor<AMasterRoom>(BossRoom);
+
+        if (!Boss)
+            continue;
+
+        Boss->SetActorLocation(TryExit->GetComponentLocation());
+        Boss->SetActorRotation(TryExit->GetComponentRotation());
+
+        if (IsRoomOverlap(Boss))
+        {
+            Boss->Destroy();
+            continue;
+        }
+
+        bPlaced = true;
+
+        SpawnedActors.Add(Boss);
+
+        TArray<USceneComponent*> BossExits;
+        Boss->GetExitHolder()->GetChildrenComponents(false, BossExits);
+
+        Exits.Remove(TryExit);
+        ClosingUnusedExits.Remove(TryExit);
+        Exits.Append(BossExits);
+
+        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green,TEXT("Boss Room placed successfully!"));
+
+        break;
+    }
+
+    //If no exit worked
+    if (!bPlaced)
+    {
+        GEngine->AddOnScreenDebugMessage(
+            -1, 5.f, FColor::Red, TEXT("Failed to place Boss Room at any exit!"));
+    }
 }
 
 void ADungeonGenerator::SoftRestartGen()

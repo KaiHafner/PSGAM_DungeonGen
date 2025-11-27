@@ -27,6 +27,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Rooms")
 	TArray<TSubclassOf<AMasterRoom>> SpecialSpawnRooms;
 
+	UPROPERTY(EditAnywhere, Category = "Rooms")
+	TSubclassOf<AMasterRoom> BossRoom;
+
 	UPROPERTY(EditAnywhere, Category = "Unused Exits Closing Wall")
 	TSubclassOf<AMasterClosingWall> ClosingWall;
 
@@ -70,6 +73,7 @@ public:
 	void RemoveOverlappingRooms();
 	void CloseExits();
 	void SetSeed();
+	void SpawnBossRoom();
 	void RestartGen();
 
 
