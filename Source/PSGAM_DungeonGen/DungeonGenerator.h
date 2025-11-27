@@ -25,16 +25,19 @@ public:
 	TArray<TSubclassOf<AMasterRoom>> RoomsToBeSpawned;
 
 	UPROPERTY(EditAnywhere, Category = "Rooms")
-	TArray<TSubclassOf<AMasterRoom>> SpecialSpawnRooms;
+	TArray<TSubclassOf<AMasterRoom>> Stairways;
 
 	UPROPERTY(EditAnywhere, Category = "Rooms")
-	TSubclassOf<AMasterRoom> BossRoom;
+	TArray<TSubclassOf<AMasterRoom>> BossRoom;
 
 	UPROPERTY(EditAnywhere, Category = "Unused Exits Closing Wall")
 	TSubclassOf<AMasterClosingWall> ClosingWall;
 
 	UPROPERTY(EditAnywhere, Category = "Generation Info")
 	int32 RoomLimit;
+
+	UPROPERTY(EditAnywhere, Category = "Generation Info", meta = (ToolTip = "RoomLimit % StairFrequency "))
+	int32 StairFrequency;
 
 	UPROPERTY(EditAnywhere, Category = "Generation Info")
 	bool LinearDungeon;

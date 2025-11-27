@@ -65,11 +65,11 @@ void ADungeonGenerator::SpawnNextRoom()
 
         //Pick room type
         AMasterRoom* RoomToSpawn = nullptr;
-        if (RoomLimit % 10 == 0 && SpecialSpawnRooms.Num() > 0)
+        if (RoomLimit % StairFrequency == 0 && Stairways.Num() > 0)
         {
             //Spawns special room
-            int32 SpecialRoomIndex = RandomStream.RandRange(0, SpecialSpawnRooms.Num() - 1);
-            RoomToSpawn = GetWorld()->SpawnActor<AMasterRoom>(SpecialSpawnRooms[SpecialRoomIndex]);
+            int32 StairwaysIndex = RandomStream.RandRange(0, Stairways.Num() - 1);
+            RoomToSpawn = GetWorld()->SpawnActor<AMasterRoom>(Stairways[StairwaysIndex]);
         }
         else if (RoomsToBeSpawned.Num() > 0)
         {
@@ -198,10 +198,7 @@ void ADungeonGenerator::CloseExits()
         //Spawn actor at unused wall
 		AMasterClosingWall* ClosingWallSpawned = GetWorld()->SpawnActor<AMasterClosingWall>(ClosingWall);
 
-
         SpawnedActors.Add(ClosingWallSpawned);
-
-
 
 		//RelativeOffset sets position for wall curently flush with other walls
 		FVector RelativeOffset(-50.0f, 0.0f, 250.0f);
@@ -235,11 +232,14 @@ void ADungeonGenerator::SpawnBossRoom()
     const int32 MaxRetries = Exits.Num();
     bool bPlaced = false;
 
+    AMasterRoom* Boss = nullptr;
+
     for (int32 i = Exits.Num() - 1; i >= 0; i--)
     {
         USceneComponent* TryExit = Exits[i];
 
-        AMasterRoom* Boss = GetWorld()->SpawnActor<AMasterRoom>(BossRoom);
+        int32 BossRoomIndex = RandomStream.RandRange(0, Stairways.Num() - 1);
+        Boss = GetWorld()->SpawnActor<AMasterRoom>(BossRoom[BossRoomIndex]);
 
         if (!Boss)
             continue;
@@ -272,8 +272,7 @@ void ADungeonGenerator::SpawnBossRoom()
     //If no exit worked
     if (!bPlaced)
     {
-        GEngine->AddOnScreenDebugMessage(
-            -1, 5.f, FColor::Red, TEXT("Failed to place Boss Room at any exit!"));
+        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Failed to place Boss Room at any exit!"));
     }
 }
 
