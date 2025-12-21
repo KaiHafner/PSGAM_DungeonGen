@@ -17,26 +17,33 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
+	FRandomStream RandomStream;
+
 	//Generation Info
 	UPROPERTY(EditAnywhere, Category = "Generation Info")
-	int32 RoomLimit;
+	int32 GenerationSeed;
 
-	UPROPERTY(EditAnywhere, Category = "Generation Info", meta = (ToolTip = "RoomLimit % StairFrequency "))
-	int32 StairFrequency;
-
-
-	FRandomStream RandomStream;
-	UPROPERTY(EditAnywhere, Category = "Generation Info")
-	int32 GenerationSeed; //-1 = random seed
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Dungeon Info")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Generation Info")
 	int32 GenerationSeedResult;
 
-	UPROPERTY(EditAnywhere, Category = "Generation Info")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Generation Info")
+	bool bDungeonCompleted;
+
+
+	//Generation Settings
+	UPROPERTY(EditAnywhere, Category = "Generation Settings")
+	int32 RoomLimit;
+
+	UPROPERTY(EditAnywhere, Category = "Generation Settings")
+	int32 MinRoomsBetweenStairs = 3;
+	int32 RoomsSinceLastStair = 0;
+
+	UPROPERTY(EditAnywhere, Category = "Generation Settings")
 	bool LinearDungeon;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dungeon Info")
-	bool bDungeonCompleted;
+	UPROPERTY(EditAnywhere, Category = "Generation Settings")
+	bool AllowStairways;
+
 
 	//Rooms
 	UPROPERTY(EditAnywhere, Category = "Rooms")

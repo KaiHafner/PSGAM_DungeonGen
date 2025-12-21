@@ -63,19 +63,22 @@ void ADungeonGenerator::SpawnNextRoom()
     {
         RetryCount++;
 
+        bool bCanSpawnStairs = AllowStairways && Stairways.Num() > 0 && RoomsSinceLastStair >= MinRoomsBetweenStairs;
+        bool bSpawnStairs = bCanSpawnStairs && RandomStream.FRand() < 0.4f;
+
         //Pick room type
         AMasterRoom* RoomToSpawn = nullptr;
-        if (RoomLimit % StairFrequency == 0 && Stairways.Num() > 0)
+        if (bSpawnStairs)
         {
-            //Spawns special room
-            int32 StairwaysIndex = RandomStream.RandRange(0, Stairways.Num() - 1);
-            RoomToSpawn = GetWorld()->SpawnActor<AMasterRoom>(Stairways[StairwaysIndex]);
+            RoomsSinceLastStair = 0;
+            int32 Index = RandomStream.RandRange(0, Stairways.Num() - 1);
+            RoomToSpawn = GetWorld()->SpawnActor<AMasterRoom>(Stairways[Index]);
         }
-        else if (RoomsToBeSpawned.Num() > 0)
+        else
         {
-            //spawns normal rooms
-            int32 RoomIndex = RandomStream.RandRange(0, RoomsToBeSpawned.Num() - 1);
-            RoomToSpawn = GetWorld()->SpawnActor<AMasterRoom>(RoomsToBeSpawned[RoomIndex]);
+            RoomsSinceLastStair++;
+            int32 Index = RandomStream.RandRange(0, RoomsToBeSpawned.Num() - 1);
+            RoomToSpawn = GetWorld()->SpawnActor<AMasterRoom>(RoomsToBeSpawned[Index]);
         }
 
         if (!RoomToSpawn)
