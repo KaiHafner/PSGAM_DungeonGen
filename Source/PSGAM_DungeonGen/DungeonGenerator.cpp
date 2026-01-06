@@ -132,8 +132,7 @@ void ADungeonGenerator::SpawnNextRoom()
     //If still failed after all retries, restart the level
     if (!bRoomPlaced)
     {
-        GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Red, FString::Printf(TEXT("Failed to place room after %d retries. Restarting with new seed..."), MaxRetries));
-
+        //GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Red, FString::Printf(TEXT("Failed to place room after %d retries. Restarting with new seed..."), MaxRetries));
         SoftRestartGen();
         return;
     }
@@ -224,7 +223,7 @@ void ADungeonGenerator::SetSeed()
 	}
 
 	RandomStream.Initialize(GenerationSeedResult);
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("%d"), GenerationSeedResult));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("%d"), GenerationSeedResult));
 }
 
 void ADungeonGenerator::SpawnBossRoom()
