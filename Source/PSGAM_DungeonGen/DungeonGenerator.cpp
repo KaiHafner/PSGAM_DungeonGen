@@ -58,10 +58,10 @@ void ADungeonGenerator::SpawnNextRoom()
 
     TotalAttempts++; //Attempt Tracker
 
-
     while (!bRoomPlaced && RetryCount < MaxRetries)
     {
         RetryCount++;
+        TotalAttempts++; //Attempt Tracker
 
         bool bCanSpawnStairs = AllowStairways && Stairways.Num() > 0 && RoomsSinceLastStair >= MinRoomsBetweenStairs;
         bool bSpawnStairs = bCanSpawnStairs && RandomStream.FRand() < 0.4f;
