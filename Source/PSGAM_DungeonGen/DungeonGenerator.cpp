@@ -56,7 +56,7 @@ void ADungeonGenerator::SpawnNextRoom()
     int32 RetryCount = 0;
     const int32 MaxRetries = 10;
 
-    TotalAttempts++; //Attempt Tracker
+    //TotalAttempts++; //Attempt Tracker
 
     while (!bRoomPlaced && RetryCount < MaxRetries)
     {
